@@ -22,6 +22,7 @@
 #include "gpio.h"
 #include "ltdc.h"
 #include "fmc.h"
+#include "usart.h"
 
 #include "delay.h"
 #include "i2c.h"
@@ -110,6 +111,7 @@ int main(void)
   MX_GPIO_Init();
   MX_FMC_Init();
   MX_LTDC_Init();
+  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   FT5X06_Init();
   
