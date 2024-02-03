@@ -53,6 +53,6 @@ dkms.conf
 
 # Filters local user related files in Keil project
 
-/MDK-ARM
+/MDK-ARM/*
 !/MDK-ARM/startup_stm32h753xx.s
 !/MDK-ARM/stm32h753iit6-threadx-cubemx.uvprojx
