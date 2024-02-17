@@ -62,7 +62,7 @@ void MX_FMC_Init(void)
   SdramTiming.SelfRefreshTime = 5;		// tRAS：自刷新周期
   SdramTiming.RowCycleDelay = 7;		// tRC：刷新命令和激活命令之间的延迟
   SdramTiming.WriteRecoveryTime = 3;	// tWR：写命令和预充电命令之间的延迟
-  SdramTiming.RPDelay = 2;              // tRP：义预充电命令与其它命令之间的延迟
+  SdramTiming.RPDelay = 2;              // tRP：定义预充电命令与其它命令之间的延迟
   SdramTiming.RCDDelay = 2;             // tRCD：定义行有效命令与读/写命令之间的延迟
 
   if (HAL_SDRAM_Init(&hsdram1, &SdramTiming) != HAL_OK)

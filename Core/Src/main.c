@@ -85,11 +85,8 @@ void tx_application_define(void * first_unused_memory)
 int main(void)
 {
   /* USER CODE BEGIN 1 */
-
+	
   /* USER CODE END 1 */
-
-  /* MPU Configuration--------------------------------------------------------*/
-  MPU_Config();
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -111,7 +108,6 @@ int main(void)
   MX_GPIO_Init();
   MX_FMC_Init();
   MX_LTDC_Init();
-  MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   FT5X06_Init();
   

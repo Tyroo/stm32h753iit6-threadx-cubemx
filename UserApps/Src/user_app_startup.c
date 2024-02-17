@@ -1,7 +1,7 @@
 #include "user_app.h"
 
 
-#define TX_LVGL_THREAD_STACK_SIZE		(2048)
+#define TX_LVGL_THREAD_STACK_SIZE		(4096)
 
 
 TX_THREAD               tx_lvgl_thread;
@@ -13,8 +13,8 @@ static void UserApp_Startup_LvglThread(ULONG thread_input)
 {
 	for( ; ; )
 	{
-		lv_timer_handler();
-		tx_thread_sleep(1);
+		UINT time = lv_task_handler();
+		tx_thread_sleep(time);
 	}
 }
 
@@ -25,7 +25,9 @@ void UserApp_Startup_Init(void)
 	lv_port_disp_init(); 
 	lv_port_indev_init();
 	
-	lv_demo_widgets();
+	//lv_demo_stress();
+	lv_demo_benchmark();
+	//lv_demo_widgets();
 	
 	tx_semaphore_create(&tx_lvgl_thread_semaphore, "LvglThreadSemaphore", 0);
 	

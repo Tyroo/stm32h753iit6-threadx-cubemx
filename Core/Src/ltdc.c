@@ -232,10 +232,12 @@ void HAL_LTDC_MspDeInit(LTDC_HandleTypeDef* ltdcHandle)
 }
 
 /* USER CODE BEGIN 1 */
+
 void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
 {
-	tx_semaphore_put(&tx_lvgl_thread_semaphore);
-	
 	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
+	
+	tx_semaphore_put(&tx_lvgl_thread_semaphore);
 }
+
 /* USER CODE END 1 */

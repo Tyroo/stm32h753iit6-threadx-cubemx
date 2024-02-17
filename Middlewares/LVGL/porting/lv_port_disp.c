@@ -41,6 +41,8 @@
 static void disp_init(void);
 
 static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_color_t * color_p);
+
+static void disp_wait_flush(lv_disp_drv_t * disp_drv);
 //static void gpu_fill(lv_disp_drv_t * disp_drv, lv_color_t * dest_buf, lv_coord_t dest_width,
 //        const lv_area_t * fill_area, lv_color_t color);
 
@@ -127,12 +129,12 @@ void lv_port_disp_init(void)
 
     /*Used to copy the buffer's content to the display*/
     disp_drv.flush_cb = disp_flush;
-
+	
     /*Set a display buffer*/
     disp_drv.draw_buf = &draw_buf_dsc_3;
 
     /*Required for Example 3)*/
-    //disp_drv.full_refresh = 1;
+    disp_drv.full_refresh = 1;
 
     /* Fill a memory array with a color if you have GPU.
      * Note that, in lv_conf.h you can enable GPUs that has built-in support in LVGL.
@@ -164,7 +166,6 @@ static void disp_flush(lv_disp_drv_t * disp_drv, const lv_area_t * area, lv_colo
 	if (state == TX_SUCCESS)
 	{
 		HAL_LTDC_SetAddress(&hltdc, (uint32_t)color_p, 0);
-		
 		/*IMPORTANT!!!
 		 *Inform the graphics library that you are ready with the flushing*/
 		lv_disp_flush_ready(disp_drv);

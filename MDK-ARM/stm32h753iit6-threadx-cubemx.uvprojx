@@ -137,7 +137,7 @@
             <DriverSelection>4101</DriverSelection>
           </Flash1>
           <bUseTDR>1</bUseTDR>
-          <Flash2>BIN\UL2V8M.DLL</Flash2>
+          <Flash2>BIN\UL2CM3.DLL</Flash2>
           <Flash3></Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
@@ -313,7 +313,7 @@
           </ArmAdsMisc>
           <Cads>
             <interw>1</interw>
-            <Optim>4</Optim>
+            <Optim>5</Optim>
             <oTime>0</oTime>
             <SplitLS>0</SplitLS>
             <OneElfS>1</OneElfS>
@@ -1439,6 +1439,11 @@
               <FilePath>..\Middlewares\LVGL\demos\stress\lv_demo_stress.c</FilePath>
             </File>
             <File>
+              <FileName>lv_demo_benchmark.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\lv_demo_benchmark.c</FilePath>
+            </File>
+            <File>
               <FileName>img_clothes.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\LVGL\demos\widgets\assets\img_clothes.c</FilePath>
@@ -1609,14 +1614,14 @@
               <FilePath>..\Middlewares\LVGL\src\extra\layouts\grid\lv_grid.c</FilePath>
             </File>
             <File>
-              <FileName>lv_theme_basic.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\LVGL\src\extra\themes\basic\lv_theme_basic.c</FilePath>
-            </File>
-            <File>
               <FileName>lv_theme_default.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\LVGL\src\extra\themes\default\lv_theme_default.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_theme_basic.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\src\extra\themes\basic\lv_theme_basic.c</FilePath>
             </File>
             <File>
               <FileName>lv_theme_mono.c</FileName>
@@ -1699,6 +1704,11 @@
               <FilePath>..\Middlewares\LVGL\src\extra\widgets\spinbox\lv_spinbox.c</FilePath>
             </File>
             <File>
+              <FileName>lv_font_montserrat_12_subpx.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\src\font\lv_font_montserrat_12_subpx.c</FilePath>
+            </File>
+            <File>
               <FileName>lv_spinner.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\LVGL\src\extra\widgets\spinner\lv_spinner.c</FilePath>
@@ -1757,11 +1767,6 @@
               <FileName>lv_font_montserrat_12.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\LVGL\src\font\lv_font_montserrat_12.c</FilePath>
-            </File>
-            <File>
-              <FileName>lv_font_montserrat_12_subpx.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\Middlewares\LVGL\src\font\lv_font_montserrat_12_subpx.c</FilePath>
             </File>
             <File>
               <FileName>lv_font_montserrat_14.c</FileName>
@@ -2152,6 +2157,51 @@
               <FileName>lv_port_indev.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\Middlewares\LVGL\porting\lv_port_indev.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_benchmark_cogwheel_alpha16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\img_benchmark_cogwheel_alpha16.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_benchmark_cogwheel_argb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\img_benchmark_cogwheel_argb.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_benchmark_cogwheel_chroma_keyed.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\img_benchmark_cogwheel_chroma_keyed.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_benchmark_cogwheel_indexed16.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\img_benchmark_cogwheel_indexed16.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_benchmark_cogwheel_rgb.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\img_benchmark_cogwheel_rgb.c</FilePath>
+            </File>
+            <File>
+              <FileName>img_benchmark_cogwheel_rgb565a8.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\img_benchmark_cogwheel_rgb565a8.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_bechmark_montserrat_12_compr_az.c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\lv_font_bechmark_montserrat_12_compr_az.c.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_bechmark_montserrat_16_compr_az.c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\lv_font_bechmark_montserrat_16_compr_az.c.c</FilePath>
+            </File>
+            <File>
+              <FileName>lv_font_bechmark_montserrat_28_compr_az.c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Middlewares\LVGL\demos\benchmark\assets\lv_font_bechmark_montserrat_28_compr_az.c.c</FilePath>
             </File>
           </Files>
         </Group>
