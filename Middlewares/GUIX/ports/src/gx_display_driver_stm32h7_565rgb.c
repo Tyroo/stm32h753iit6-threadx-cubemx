@@ -21,6 +21,7 @@
 #include   "gx_utility.h"
 #include   "gx_display_driver_stm32h7_565rgb.h"
 
+#include "ft5x06.h"
 #include "stm32h7xx_hal.h"
 
 /*
@@ -31,8 +32,11 @@
 static GX_WINDOW		*gx_window;
 static GX_WINDOW_ROOT	*gx_window_root;
 
-static TX_THREAD       	tx_guix_thread;
-static UCHAR			tx_guix_thread_stack[GX_GUIX_THREAD_STACK_SIZE];
+static TX_THREAD       	tx_guix_display_driver_thread;
+static UCHAR			tx_guix_display_driver_thread_stack[GX_GUIX_DISPLAY_DRIVER_THREAD_STACK_SIZE];
+
+static TX_THREAD		tx_guix_touchpad_event_thread;
+static UCHAR			tx_guix_touchpad_event_thread_stack[GX_GUIX_TOUCHPAD_EVENT_THREAD_STACK_SIZE];
 
 	   TX_QUEUE			tx_guix_display_queue;
 static TX_BYTE_POOL		tx_guix_system_memory_pool;
@@ -586,8 +590,8 @@ static UINT gx_display_driver_565rgb_setup(GX_DISPLAY *display)
 	
 	tx_queue_create(&tx_guix_display_queue, "GUIX Display driver queue", sizeof(ULONG), tx_display_queue_memptr, sizeof(ULONG));
 	
-	tx_thread_create(&tx_guix_thread, "GUIX Display driver thread", gx_display_buffer_565rgb_toggle, 0,  
-		tx_guix_thread_stack, GX_GUIX_THREAD_STACK_SIZE, 0, 0, TX_NO_TIME_SLICE, TX_AUTO_START);
+	tx_thread_create(&tx_guix_display_driver_thread, "GUIX Display driver thread", gx_display_buffer_565rgb_toggle, 0,  
+		tx_guix_display_driver_thread_stack, GX_GUIX_DISPLAY_DRIVER_THREAD_STACK_SIZE, 0, 0, TX_NO_TIME_SLICE, TX_AUTO_START);
 #else
     _gx_display_driver_565rgb_setup(display, (VOID*)GX_DISPLAY_BUFFER_ADDR1, gx_display_buffer_565rgb_toggle);
 #endif
@@ -630,6 +634,65 @@ static void gx_system_memory_setup(void)
 }
 
 
+static void gx_touchpad_event_process(ULONG thread_input)
+{
+	GX_EVENT touchpad_event;
+	
+	UCHAR touchpad_state_old = 1;
+	UCHAR touchpad_state_new = 1;
+	
+	for( ; ; )
+	{
+		touchpad_state_new = FT5X06_GET_PIN_PEN();
+		
+		if (touchpad_state_new != touchpad_state_old)
+		{
+			if (touchpad_state_new)
+			{
+				touchpad_event.gx_event_type = GX_EVENT_PEN_UP;
+			}
+			else
+			{
+				touchpad_event.gx_event_type = GX_EVENT_PEN_DOWN;
+			}
+			
+			touchpad_event.gx_event_sender = 0;
+			touchpad_event.gx_event_target = 0;
+			touchpad_event.gx_event_display_handle = GX_DISPLAY_BUFFER_ADDR1;
+			
+			FT5X06_GetTouchPoint((unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_x,
+				(unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_y);
+			
+			gx_system_event_send(&touchpad_event);
+		}
+		
+		if (!touchpad_state_old)
+		{
+			touchpad_event.gx_event_type = GX_EVENT_PEN_DRAG;
+			touchpad_event.gx_event_sender = 0;
+			touchpad_event.gx_event_target = 0;
+			touchpad_event.gx_event_display_handle = GX_DISPLAY_BUFFER_ADDR1;
+			
+			FT5X06_GetTouchPoint((unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_x,
+				(unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_y);
+			
+			gx_system_event_fold(&touchpad_event);
+		}
+			
+		touchpad_state_old = touchpad_state_new;
+		
+		tx_thread_sleep(20);
+	}
+}
+
+
+static void gx_touchpad_event_setup(void)
+{
+	tx_thread_create(&tx_guix_touchpad_event_thread, "GUIX touchpad event thread", gx_touchpad_event_process, 0,  
+		tx_guix_touchpad_event_thread_stack, GX_GUIX_TOUCHPAD_EVENT_THREAD_STACK_SIZE, 0, 0, TX_NO_TIME_SLICE, TX_AUTO_START);
+}
+
+
 void gx_display_init(void)
 {
 	/* 初始化GUIX */
@@ -637,6 +700,9 @@ void gx_display_init(void)
 	
 	/* 初始化GUIX动态内存区 */
 	gx_system_memory_setup();
+	
+	/* 创建GUIX触摸板事件处理线程 */
+	gx_touchpad_event_setup();
 	
 	/* 配置显示屏 */
     gx_studio_display_configure(DISPLAY_SCREEN_1024X600, gx_display_driver_565rgb_setup,

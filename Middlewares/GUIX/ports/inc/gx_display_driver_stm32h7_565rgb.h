@@ -20,9 +20,10 @@
 #include "gx_user_generate_resources.h"
 #include "gx_user_generate_specifications.h"
 
-#define GX_CHROMEART_ENABLE					(1)		// 用于使能DMA2D加速
-#define GX_FULL_CANVAS_PINGPONG_REFRESH		(1)		// 全屏画布乒乓刷新
-#define GX_GUIX_THREAD_STACK_SIZE			(100)
+#define GX_CHROMEART_ENABLE									(1)		// 用于使能DMA2D加速
+#define GX_FULL_CANVAS_PINGPONG_REFRESH						(1)		// 全屏画布乒乓刷新
+#define GX_GUIX_DISPLAY_DRIVER_THREAD_STACK_SIZE			(100)	// GUIX显示驱动线程栈大小
+#define GX_GUIX_TOUCHPAD_EVENT_THREAD_STACK_SIZE			(100)	// GUIX触摸板事件线程栈大小
 
 #define GX_DISPLAY_SCREEN_WIDTH		(DISPLAY_SCREEN_1024X600_X_RESOLUTION)						// 显示屏的宽度
 #define GX_DISPLAY_SCREEN_HEIGHT	(DISPLAY_SCREEN_1024X600_Y_RESOLUTION)						// 显示屏的高度
