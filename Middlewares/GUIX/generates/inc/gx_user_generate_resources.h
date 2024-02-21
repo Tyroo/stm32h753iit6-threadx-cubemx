@@ -44,7 +44,6 @@
 /* String Ids                                                                  */
 
 #define GX_STRING_ID_STRING_1 1
-#define GX_STRING_ID_STRING_2 2
-#define DISPLAY_SCREEN_1024X600_STRING_TABLE_SIZE 3
+#define DISPLAY_SCREEN_1024X600_STRING_TABLE_SIZE 2
 
 #endif                                       /* sentry                         */

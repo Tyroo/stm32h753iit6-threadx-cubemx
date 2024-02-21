@@ -22,6 +22,7 @@
 #include "gpio.h"
 #include "ltdc.h"
 #include "fmc.h"
+#include "dma2d.h"
 #include "usart.h"
 
 #include "delay.h"
@@ -117,6 +118,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_FMC_Init();
+  MX_DMA2D_Init();
   MX_LTDC_Init();
   /* USER CODE BEGIN 2 */
   FT5X06_Init();

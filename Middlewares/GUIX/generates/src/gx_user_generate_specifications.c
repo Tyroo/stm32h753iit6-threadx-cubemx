@@ -90,7 +90,7 @@ GX_WINDOW_PROPERTIES window_window_properties =
 };
 GX_PROMPT_PROPERTIES window_prompt_properties =
 {
-    GX_STRING_ID_STRING_2,                   /* string id                      */
+    GX_STRING_ID_STRING_1,                   /* string id                      */
     GX_FONT_ID_PROMPT,                       /* font id                        */
     GX_COLOR_ID_TEXT,                        /* normal text color              */
     GX_COLOR_ID_SELECTED_TEXT,               /* selected text color            */

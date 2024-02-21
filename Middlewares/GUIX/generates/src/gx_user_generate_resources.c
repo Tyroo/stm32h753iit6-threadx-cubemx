@@ -267,8 +267,7 @@ GX_CONST GX_PIXELMAP *display_screen_1024x600_theme_1_pixelmap_table[] =
 
 /* String values                                                               */
 
-GX_CONST GX_UBYTE display_screen_1024x600_STRING_1_English[] = "prompt";
-GX_CONST GX_UBYTE display_screen_1024x600_STRING_2_English[] = "Hello world!";
+GX_CONST GX_UBYTE display_screen_1024x600_STRING_1_English[] = "Hello world!";
 
 /* String Table for display_screen_1024x600 language English                   */
 
@@ -276,7 +275,6 @@ GX_CONST GX_STRING display_screen_1024x600_English_string_table[DISPLAY_SCREEN_1
 {
     {GX_NULL, 0},
     {(GX_CONST GX_CHAR *)display_screen_1024x600_STRING_1_English, sizeof(display_screen_1024x600_STRING_1_English) - 1},
-    {(GX_CONST GX_CHAR *)display_screen_1024x600_STRING_2_English, sizeof(display_screen_1024x600_STRING_2_English) - 1}
 };
 
 /*  Language Table                                                             */

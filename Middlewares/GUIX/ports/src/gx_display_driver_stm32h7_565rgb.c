@@ -38,7 +38,8 @@ static UCHAR			tx_guix_display_driver_thread_stack[GX_GUIX_DISPLAY_DRIVER_THREAD
 static TX_THREAD		tx_guix_touchpad_event_thread;
 static UCHAR			tx_guix_touchpad_event_thread_stack[GX_GUIX_TOUCHPAD_EVENT_THREAD_STACK_SIZE];
 
-	   TX_QUEUE			tx_guix_display_queue;
+TX_SEMAPHORE			tx_guix_display_driver_semaphore;
+volatile ULONG			tx_guix_display_driver_output_buff;
 static TX_BYTE_POOL		tx_guix_system_memory_pool;
 
 /*
@@ -468,18 +469,18 @@ static void gx_chromeart_glyph_8bit_draw(GX_DRAW_CONTEXT *context, GX_RECTANGLE 
 */
 #if GX_FULL_CANVAS_PINGPONG_REFRESH && GX_CHROMEART_ENABLE
 
-static void gx_display_buffer_565rgb_toggle(ULONG thread_input)
+static void gx_display_buffer_565rgb_full_canvas_pingpong_refresh(ULONG thread_input)
 {
-	ULONG tx_guix_display_queue_msg;
-	
 	for( ; ; )
 	{
-		if (tx_queue_receive(&tx_guix_display_queue, &tx_guix_display_queue_msg, TX_WAIT_FOREVER) == TX_SUCCESS)
+		if (tx_semaphore_get(&tx_guix_display_driver_semaphore, TX_WAIT_FOREVER) == TX_SUCCESS)
 		{
-			while(DMA2D->CR & DMA2D_CR_START) 
+			while(DMA2D->CR & DMA2D_CR_START)
+			{
 				tx_thread_sleep(1);
+			}
 			
-			DMA2D->OMAR = (uint32_t)tx_guix_display_queue_msg;
+			DMA2D->OMAR = (uint32_t)tx_guix_display_driver_output_buff;
 			DMA2D->CR = 0x00000000UL | (1 << 9);
 			DMA2D->FGMAR = (uint32_t)GX_DISPLAY_CANVAS_ADDR;
 			DMA2D->FGOR = 0;
@@ -492,6 +493,11 @@ static void gx_display_buffer_565rgb_toggle(ULONG thread_input)
 			DMA2D->CR |= DMA2D_CR_START;
 		}
 	}
+}
+
+static void gx_display_buffer_565rgb_toggle(GX_CANVAS *canvas, GX_RECTANGLE *dirty)
+{
+
 }
 
 #else
@@ -550,6 +556,8 @@ static void gx_display_buffer_565rgb_toggle(GX_CANVAS *canvas, GX_RECTANGLE *dir
 			get += src_stride_ulongs;
 		}
 #else	
+		while(DMA2D->CR & DMA2D_CR_START);
+
 		DMA2D->CR = 0x00000000UL | (1 << 9);
 		DMA2D->FGMAR = (uint32_t)get;
 		DMA2D->OMAR = (uint32_t)put;
@@ -560,8 +568,6 @@ static void gx_display_buffer_565rgb_toggle(GX_CANVAS *canvas, GX_RECTANGLE *dir
 		DMA2D->FGPFCCR = LTDC_PIXEL_FORMAT_RGB565;
 		DMA2D->OPFCCR = LTDC_PIXEL_FORMAT_RGB565;
 		DMA2D->NLR = (uint32_t)(copy_width << 16) | (uint16_t)copy_height;
-		
-		while(DMA2D->CR & DMA2D_CR_START);
 		
 		DMA2D->CR |= DMA2D_CR_START;
 #endif
@@ -584,13 +590,11 @@ static UINT gx_display_driver_565rgb_setup(GX_DISPLAY *display)
 	
 	VOID * tx_display_queue_memptr;
 	
-	_gx_display_driver_565rgb_setup(display, (VOID*)GX_DISPLAY_BUFFER_ADDR1, NULL);
+	_gx_display_driver_565rgb_setup(display, (VOID*)GX_DISPLAY_BUFFER_ADDR1, gx_display_buffer_565rgb_toggle);
 	
-	tx_byte_allocate(&tx_guix_system_memory_pool, &tx_display_queue_memptr, sizeof(ULONG), TX_NO_WAIT);
+	tx_semaphore_create(&tx_guix_display_driver_semaphore, "GUIX Display driver semaphore", 0);
 	
-	tx_queue_create(&tx_guix_display_queue, "GUIX Display driver queue", sizeof(ULONG), tx_display_queue_memptr, sizeof(ULONG));
-	
-	tx_thread_create(&tx_guix_display_driver_thread, "GUIX Display driver thread", gx_display_buffer_565rgb_toggle, 0,  
+	tx_thread_create(&tx_guix_display_driver_thread, "GUIX Display driver thread", gx_display_buffer_565rgb_full_canvas_pingpong_refresh, 0,  
 		tx_guix_display_driver_thread_stack, GX_GUIX_DISPLAY_DRIVER_THREAD_STACK_SIZE, 0, 0, TX_NO_TIME_SLICE, TX_AUTO_START);
 #else
     _gx_display_driver_565rgb_setup(display, (VOID*)GX_DISPLAY_BUFFER_ADDR1, gx_display_buffer_565rgb_toggle);

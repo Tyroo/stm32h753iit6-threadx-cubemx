@@ -241,18 +241,19 @@ void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
 	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
 #endif
 	
-	static ULONG tx_guix_display_queue_msg = GX_DISPLAY_BUFFER_ADDR2;
-	
-	if (tx_guix_display_queue_msg != GX_DISPLAY_BUFFER_ADDR1)
+	if (tx_guix_display_driver_output_buff != GX_DISPLAY_BUFFER_ADDR1)
 	{
-		tx_guix_display_queue_msg = GX_DISPLAY_BUFFER_ADDR1;
+		tx_guix_display_driver_output_buff = GX_DISPLAY_BUFFER_ADDR1;
 	}
 	else
 	{
-		tx_guix_display_queue_msg = GX_DISPLAY_BUFFER_ADDR2;
+		tx_guix_display_driver_output_buff = GX_DISPLAY_BUFFER_ADDR2;
 	}
 	
-	tx_queue_send(&tx_guix_display_queue, &tx_guix_display_queue_msg, TX_WAIT_FOREVER);
+	tx_semaphore_put(&tx_guix_display_driver_semaphore);
+	
+	HAL_LTDC_SetAddress(hltdc, tx_guix_display_driver_output_buff, 0);
+	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
 }
 
 /* USER CODE END 1 */
