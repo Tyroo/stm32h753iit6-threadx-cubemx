@@ -235,9 +235,24 @@ void HAL_LTDC_MspDeInit(LTDC_HandleTypeDef* ltdcHandle)
 
 void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
 {
-	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
-	
+#if 0
 	tx_semaphore_put(&tx_lvgl_thread_semaphore);
+	
+	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
+#endif
+	
+	static ULONG tx_guix_display_queue_msg = GX_DISPLAY_BUFFER_ADDR2;
+	
+	if (tx_guix_display_queue_msg != GX_DISPLAY_BUFFER_ADDR1)
+	{
+		tx_guix_display_queue_msg = GX_DISPLAY_BUFFER_ADDR1;
+	}
+	else
+	{
+		tx_guix_display_queue_msg = GX_DISPLAY_BUFFER_ADDR2;
+	}
+	
+	tx_queue_send(&tx_guix_display_queue, &tx_guix_display_queue_msg, TX_WAIT_FOREVER);
 }
 
 /* USER CODE END 1 */

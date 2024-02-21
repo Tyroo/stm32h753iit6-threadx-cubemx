@@ -21,6 +21,7 @@ static void UserApp_Startup_LvglThread(ULONG thread_input)
 
 void UserApp_Startup_Init(void)
 {
+#if 0
 	lv_init();
 	lv_port_disp_init(); 
 	lv_port_indev_init();
@@ -33,6 +34,9 @@ void UserApp_Startup_Init(void)
 	
     tx_thread_create(&tx_lvgl_thread, "LvglThread", UserApp_Startup_LvglThread, 0,  
 		tx_lvgl_thread_stack, TX_LVGL_THREAD_STACK_SIZE, 0, 0, TX_NO_TIME_SLICE, TX_AUTO_START);
+#endif
+	
+	gx_display_init();
 }
 
 
