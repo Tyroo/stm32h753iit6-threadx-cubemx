@@ -479,7 +479,7 @@ static void gx_display_buffer_565rgb_full_canvas_pingpong_refresh(ULONG thread_i
 		{
 			while(DMA2D->CR & DMA2D_CR_START)
 			{
-				tx_thread_sleep(1);
+				tx_thread_sleep(10);
 			}
 			
 			DMA2D->OMAR = (uint32_t)tx_guix_display_driver_output_buff;
@@ -664,7 +664,7 @@ static void gx_touchpad_event_process(ULONG thread_input)
 			
 			gx_system_event_send(&touchpad_event);
 		}
-		else if (touchpad_state_new)
+		else if (touchpad_state_new == 0)
 		{
 			touchpad_event.gx_event_type = GX_EVENT_PEN_DRAG;
 			
