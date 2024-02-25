@@ -38,7 +38,7 @@
 #define GX_DISPLAY_CANVAS_SIZE		(GX_DISPLAY_BUFFER_SIZE1)									// 画布显示缓冲区地址
 
 #define GX_SYSTEM_MEMORY_ADDR		(GX_DISPLAY_CANVAS_ADDR + GX_DISPLAY_CANVAS_SIZE)			// GUIX动态内存区首地址
-#define GX_SYSTEM_MEMORY_SIZE		(1024 * 1024 * 4)											// GUIX动态内存区大小
+#define GX_SYSTEM_MEMORY_SIZE		(1024 * 1024 * 20)											// GUIX动态内存区大小
 
 void gx_display_init(void);
 

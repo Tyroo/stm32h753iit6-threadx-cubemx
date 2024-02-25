@@ -83,7 +83,7 @@ typedef SHORT  GX_VALUE;
 
 #define GX_MAX_VIEWS                        32
 
-#define GX_MAX_DISPLAY_HEIGHT               800
+#define GX_MAX_DISPLAY_HEIGHT               600
 
 
 /* Define several macros for the error checking shell in GUIX.  */

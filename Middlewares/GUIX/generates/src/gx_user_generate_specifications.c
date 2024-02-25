@@ -84,15 +84,12 @@ GX_WINDOW_PROPERTIES window_properties =
 {
     0                                        /* wallpaper pixelmap id          */
 };
-GX_WINDOW_PROPERTIES window_window_properties =
-{
-    0                                        /* wallpaper pixelmap id          */
-};
+
 GX_PROMPT_PROPERTIES window_prompt_properties =
 {
     GX_STRING_ID_STRING_1,                   /* string id                      */
     GX_FONT_ID_PROMPT,                       /* font id                        */
-    GX_COLOR_ID_TEXT,                        /* normal text color              */
+    GX_COLOR_ID_SELECTED_TEXT,               /* normal text color              */
     GX_COLOR_ID_SELECTED_TEXT,               /* selected text color            */
     GX_COLOR_ID_DISABLED_TEXT                /* disabled text color            */
 };
@@ -106,9 +103,9 @@ GX_CONST GX_STUDIO_WIDGET window_prompt_define =
     0,                                       /* user data                      */
     #endif
     GX_STYLE_BORDER_THIN|GX_STYLE_ENABLED|GX_STYLE_TEXT_CENTER,   /* style flags */
-    GX_STATUS_ACCEPTS_FOCUS,                 /* status flags                   */
+    GX_STATUS_VISIBLE,                 		 /* status flags                   */
     sizeof(GX_PROMPT),                       /* control block size             */
-    GX_COLOR_ID_WIDGET_FILL,                 /* normal color id                */
+    GX_COLOR_ID_SELECTED_FILL,               /* normal color id                */
     GX_COLOR_ID_SELECTED_FILL,               /* selected color id              */
     GX_COLOR_ID_DISABLED_FILL,               /* disabled color id              */
     gx_studio_prompt_create,                 /* create function                */
@@ -119,30 +116,6 @@ GX_CONST GX_STUDIO_WIDGET window_prompt_define =
     GX_NULL,                                 /* no child widgets               */ 
     offsetof(WINDOW_CONTROL_BLOCK, window_prompt), /* control block            */
     (void *) &window_prompt_properties       /* extended properties            */
-};
-
-GX_CONST GX_STUDIO_WIDGET window_window_define =
-{
-    "window",
-    GX_TYPE_WINDOW,                          /* widget type                    */
-    GX_ID_NONE,                              /* widget id                      */
-    #if defined(GX_WIDGET_USER_DATA)
-    0,                                       /* user data                      */
-    #endif
-    GX_STYLE_BORDER_THIN|GX_STYLE_ENABLED,   /* style flags                    */
-    GX_STATUS_ACCEPTS_FOCUS,                 /* status flags                   */
-    sizeof(GX_WINDOW),                       /* control block size             */
-    GX_COLOR_ID_WINDOW_FILL,                 /* normal color id                */
-    GX_COLOR_ID_WINDOW_FILL,                 /* selected color id              */
-    GX_COLOR_ID_DISABLED_FILL,               /* disabled color id              */
-    gx_studio_window_create,                 /* create function                */
-    GX_NULL,                                 /* drawing function override      */
-    GX_NULL,                                 /* event function override        */
-    {256, 150, 767, 449},                    /* widget size                    */
-    GX_NULL,                                 /* no next widget                 */
-    &window_prompt_define,                   /* child widget definition        */
-    offsetof(WINDOW_CONTROL_BLOCK, window_window), /* control block            */
-    (void *) &window_window_properties       /* extended properties            */
 };
 
 GX_CONST GX_STUDIO_WIDGET window_define =
@@ -164,9 +137,9 @@ GX_CONST GX_STUDIO_WIDGET window_define =
     GX_NULL,                                 /* event function override        */
     {0, 0, 1023, 599},                       /* widget size                    */
     GX_NULL,                                 /* next widget                    */
-    &window_window_define,                   /* child widget                   */
+    &window_prompt_define,                   /* child widget                   */
     0,                                       /* control block                  */
-    (void *) &window_properties              /* extended properties            */
+    (void *) &window_prompt_properties       /* extended properties            */
 };
 GX_CONST GX_STUDIO_WIDGET_ENTRY gx_window_widget_table[] =
 {

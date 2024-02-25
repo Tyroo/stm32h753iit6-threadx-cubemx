@@ -295,6 +295,7 @@ static void gx_chromeart_pixelmap_blend(GX_DRAW_CONTEXT *context,
 	ULONG        *getlong;
 	GX_CANVAS    *canvas;
 	ULONG        blend_reg;
+	ULONG        reg_val;
 
      /* 如果pixelmap是压缩的，采用软件方式绘制 */
     if (pixelmap->gx_pixelmap_flags & GX_PIXELMAP_COMPRESSED)
@@ -339,12 +340,12 @@ static void gx_chromeart_pixelmap_blend(GX_DRAW_CONTEXT *context,
 	
 	if (pixelmap->gx_pixelmap_format == GX_COLOR_FORMAT_565RGB)
     {
-        DMA2D->FGMAR = (uint32_t) getshort;             
+        reg_val = (uint32_t) getshort;             
         blend_reg |= LTDC_PIXEL_FORMAT_RGB565;
     }
     else
     {
-        DMA2D->FGMAR = (uint32_t) getlong;             
+        reg_val = (uint32_t) getlong;             
         blend_reg |= LTDC_PIXEL_FORMAT_ARGB8888;
     }
 
@@ -356,7 +357,12 @@ static void gx_chromeart_pixelmap_blend(GX_DRAW_CONTEXT *context,
     {
         blend_reg |= 0x00010000;
     }
+	
+	SCB_CleanInvalidateDCache();
 
+	while(DMA2D->CR & DMA2D_CR_START);
+
+	DMA2D->FGMAR = reg_val;
 	DMA2D->CR = 0x00020000UL | (1 << 9);
 
 	/* 前景层 */
@@ -374,10 +380,6 @@ static void gx_chromeart_pixelmap_blend(GX_DRAW_CONTEXT *context,
 	DMA2D->OPFCCR = LTDC_PIXEL_FORMAT_RGB565;
 
 	DMA2D->NLR = (uint32_t)(width << 16) | (uint16_t)height;
-	
-	SCB_CleanInvalidateDCache();
-
-	while(DMA2D->CR & DMA2D_CR_START);
 
 	DMA2D->CR |= DMA2D_CR_START;
 }
@@ -431,6 +433,10 @@ static void gx_chromeart_glyph_8bit_draw(GX_DRAW_CONTEXT *context, GX_RECTANGLE 
     write_row = (USHORT *)canvas->gx_canvas_memory;
     write_row += draw_area->gx_rectangle_top * context->gx_draw_context_pitch;
     write_row += draw_area->gx_rectangle_left;
+	
+	SCB_CleanInvalidateDCache();
+
+	while(DMA2D->CR & DMA2D_CR_START);	
    
 	DMA2D->CR = DMA2D_M2M_BLEND;
 
@@ -451,10 +457,6 @@ static void gx_chromeart_glyph_8bit_draw(GX_DRAW_CONTEXT *context, GX_RECTANGLE 
 	DMA2D->OPFCCR = LTDC_PIXEL_FORMAT_RGB565;
 
 	DMA2D->NLR = (uint32_t)(width << 16) | (uint16_t)height;
-
-	SCB_CleanInvalidateDCache();
-
-	while(DMA2D->CR & DMA2D_CR_START);
 
 	DMA2D->CR |= DMA2D_CR_START;
 }
@@ -645,47 +647,36 @@ static void gx_touchpad_event_process(ULONG thread_input)
 	UCHAR touchpad_state_old = 1;
 	UCHAR touchpad_state_new = 1;
 	
+	touchpad_event.gx_event_sender = 0;
+	touchpad_event.gx_event_target = 0;
+	touchpad_event.gx_event_display_handle = GX_DISPLAY_BUFFER_ADDR1;
+	
 	for( ; ; )
 	{
 		touchpad_state_new = FT5X06_GET_PIN_PEN();
 		
 		if (touchpad_state_new != touchpad_state_old)
 		{
-			if (touchpad_state_new)
-			{
-				touchpad_event.gx_event_type = GX_EVENT_PEN_UP;
-			}
-			else
-			{
-				touchpad_event.gx_event_type = GX_EVENT_PEN_DOWN;
-			}
-			
-			touchpad_event.gx_event_sender = 0;
-			touchpad_event.gx_event_target = 0;
-			touchpad_event.gx_event_display_handle = GX_DISPLAY_BUFFER_ADDR1;
+			touchpad_event.gx_event_type = touchpad_state_new ? GX_EVENT_PEN_UP : GX_EVENT_PEN_DOWN;
 			
 			FT5X06_GetTouchPoint((unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_x,
-				(unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_y);
+								 (unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_y);
 			
 			gx_system_event_send(&touchpad_event);
 		}
-		
-		if (!touchpad_state_old)
+		else if (touchpad_state_new)
 		{
 			touchpad_event.gx_event_type = GX_EVENT_PEN_DRAG;
-			touchpad_event.gx_event_sender = 0;
-			touchpad_event.gx_event_target = 0;
-			touchpad_event.gx_event_display_handle = GX_DISPLAY_BUFFER_ADDR1;
 			
 			FT5X06_GetTouchPoint((unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_x,
-				(unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_y);
-			
+								 (unsigned short *)&touchpad_event.gx_event_payload.gx_event_pointdata.gx_point_y);
+
 			gx_system_event_fold(&touchpad_event);
 		}
-			
+		
 		touchpad_state_old = touchpad_state_new;
 		
-		tx_thread_sleep(20);
+		tx_thread_sleep(30);
 	}
 }
 
