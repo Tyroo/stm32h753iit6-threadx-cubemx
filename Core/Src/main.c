@@ -25,7 +25,7 @@
 #include "dma2d.h"
 #include "usart.h"
 
-#include "delay.h"
+#include "dwt.h"
 #include "i2c.h"
 #include "ft5x06.h"
 
@@ -118,9 +118,9 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_FMC_Init();
-  MX_DMA2D_Init();
   MX_LTDC_Init();
   /* USER CODE BEGIN 2 */
+  HAL_DWT_Init();
   FT5X06_Init();
   
   tx_kernel_enter();

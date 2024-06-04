@@ -36,7 +36,9 @@ void UserApp_Startup_Init(void)
 		tx_lvgl_thread_stack, TX_LVGL_THREAD_STACK_SIZE, 0, 0, TX_NO_TIME_SLICE, TX_AUTO_START);
 #endif
 	
+#if 1
 	gx_display_init();
+#endif
 }
 
 

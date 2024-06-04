@@ -107,6 +107,8 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
   HAL_GPIO_WritePin(GPIOH, GPIO_InitStruct.Pin, GPIO_PIN_SET);
   HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
+  
+  HAL_SYSCFG_EnableIOSpeedOptimize();
 }
 
 /* USER CODE BEGIN 2 */

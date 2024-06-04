@@ -237,7 +237,7 @@ static bool touchpad_is_pressed(void)
 static void touchpad_get_xy(lv_coord_t * x, lv_coord_t * y)
 {
     /*Your code comes here*/
-	FT5X06_GetTouchPoint((unsigned short *)x, (unsigned short *)y);
+	FT5X06_GetTouchPoint((unsigned short *)(x), (unsigned short *)(y));
 }
 
 #if 0

@@ -240,7 +240,8 @@ void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
 	
 	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
 #endif
-	
+
+#if 1
 	if (tx_guix_display_driver_output_buff != GX_DISPLAY_BUFFER_ADDR1)
 	{
 		tx_guix_display_driver_output_buff = GX_DISPLAY_BUFFER_ADDR1;
@@ -254,6 +255,7 @@ void HAL_LTDC_LineEventCallback(LTDC_HandleTypeDef *hltdc)
 	
 	HAL_LTDC_SetAddress(hltdc, tx_guix_display_driver_output_buff, 0);
 	HAL_LTDC_ProgramLineEvent(hltdc, hltdc->Init.AccumulatedActiveH + 1);
+#endif
 }
 
 /* USER CODE END 1 */

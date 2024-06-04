@@ -438,6 +438,16 @@
               <FileType>1</FileType>
               <FilePath>..\Core\Src\usart.c</FilePath>
             </File>
+            <File>
+              <FileName>i2c.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\i2c.c</FilePath>
+            </File>
+            <File>
+              <FileName>dwt.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\Core\Src\dwt.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -8814,19 +8824,9 @@
           <GroupName>UserDrives</GroupName>
           <Files>
             <File>
-              <FileName>delay.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\UserDrives\Src\delay.c</FilePath>
-            </File>
-            <File>
               <FileName>ft5x06.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\UserDrives\Src\ft5x06.c</FilePath>
-            </File>
-            <File>
-              <FileName>i2c.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\UserDrives\Src\i2c.c</FilePath>
             </File>
             <File>
               <FileName>print.c</FileName>
