@@ -129,35 +129,51 @@ static unsigned char I2C_RxReply(void)
 }
 
 
-unsigned char I2C_ReadByte(void)
+unsigned char I2C_ReadBytes(unsigned char u8Addr, unsigned char au8DataBuff[], unsigned short u16Size)
 {
-	unsigned char u8Data;
-	
 	I2C_Start();
 	
-	u8Data = I2C_RxByte();
+	// 发送设备地址（写入数据）
+	I2C_TxByte(u8Addr & 0xFE);
+	if (I2C_RxReply() == 0) { I2C_Stop(); return 0; }
 	
-	I2C_TxReply(0);
+	unsigned char u8Index = 0;
+	
+	while (u8Index < u16Size)
+	{
+		au8DataBuff[u8Index++] = I2C_RxByte();
+		I2C_TxReply(u8Index != u16Size);
+	}
 	
 	I2C_Stop();
 	
-	return u8Data;
+	return 1;
 }
 
 
-unsigned char I2C_WriteByte(unsigned char u8Data)
+unsigned char I2C_WriteBytes(unsigned char u8Addr, unsigned char au8DataBuff[], unsigned short u16Size)
 {
-	unsigned char u8Ack;
-	
 	I2C_Start();
 	
-	I2C_TxByte(u8Data);
+	// 发送设备地址（写入数据）
+	I2C_TxByte(u8Addr & 0xFE);
+	if (I2C_RxReply() == 0) { I2C_Stop(); return 0; }
 	
-	u8Ack = I2C_RxReply();
+	unsigned char u8Index = 0;
+	
+	while (u8Index < u16Size)
+	{
+		I2C_TxByte(au8DataBuff[u8Index++]);
+		
+		if (I2C_RxReply() == 0) 
+		{
+			break;
+		}
+	}
 	
 	I2C_Stop();
 	
-	return u8Ack;
+	return (u8Index == u16Size);
 }
 
 
@@ -173,8 +189,6 @@ unsigned char I2C_ReadRegister(unsigned char u8Addr, unsigned char u8Reg, unsign
 	I2C_TxByte(u8Reg);
 	if (I2C_RxReply() == 0) { I2C_Stop(); return 0; }
 	
-	I2C_Stop();
-	
 	I2C_Start();
 	
 	// 发送设备地址（读出数据）
@@ -183,10 +197,10 @@ unsigned char I2C_ReadRegister(unsigned char u8Addr, unsigned char u8Reg, unsign
 	
 	unsigned char u8Index = 0;
 	
-	while (u16Size--)
+	while (u8Index < u16Size)
 	{
 		au8DataBuff[u8Index++] = I2C_RxByte();
-		I2C_TxReply(u16Size);
+		I2C_TxReply(u8Index != u16Size);
 	}
 	
 	I2C_Stop();
@@ -209,7 +223,7 @@ unsigned char I2C_WriteRegister(unsigned char u8Addr, unsigned char u8Reg, unsig
 	
 	unsigned char u8Index = 0;
 	
-	while (u16Size--)
+	while (u8Index < u16Size)
 	{
 		I2C_TxByte(au8DataBuff[u8Index++]);
 		
